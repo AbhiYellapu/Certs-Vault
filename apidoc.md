@@ -44,7 +44,7 @@
     - Error: `{"error": "Cause of the error"}`  
 **Response Code:**  
     - Success: 200  
-    - Error status code eg: (400, 500, etc.)  
+    - Error status code eg: (500)
 
 ### 5. Search Cert:
 **Method:** GET   
