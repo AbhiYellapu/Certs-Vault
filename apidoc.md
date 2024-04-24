@@ -1,4 +1,5 @@
 1. List Cert:
+2. <br>
     Method : GET 
     Endpoint : /api/me/certs
     Query params :   ?EmployeeID=xxxx&sort=(DateOfIssue/ExpireDate/Asc/Desc)
@@ -12,7 +13,7 @@
         - Error:
             - 500
 
-2. Update Cert:
+3. Update Cert:
     Method : PUT or PATCH
     Endpoint : /api/me/certs/updatecert
     Query params :   ?CertID=xxx
@@ -24,7 +25,7 @@
         - Success: 200
         - Error: 500
 
-3. Delete Cert:
+4. Delete Cert:
     Method : DELETE
     Endpoint : /api/me/certs/deleteCert
     Query params :   ?CertID=xxx
@@ -36,7 +37,7 @@
         - Success: 200
         - Error: 500
 
-4. Insert Cert:
+5. Insert Cert:
     Method : Post
     Endpoint : /api/me/insertCert
     Query params :   ?EmployeeID=xxxx
@@ -48,7 +49,7 @@
         - Success: 200
         - Error status code eg: (400, 500, etc.)
 
-5. Search Cert:
+6. Search Cert:
     Method : GET 
     Endpoint : /api/me/certs
     Query params :   ?EmployeeID=xxxx&(CertID=xxx / CertName=xxx / OrganizationName=xxx)
