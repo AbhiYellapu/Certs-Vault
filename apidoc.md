@@ -4,7 +4,7 @@
 **Query params:** ?EmployeeID=xxxx&sort=(DateOfIssue/ExpireDate/Asc/Desc)  
 **Payload:** -  
 **Response Json:**  
-    - Success: `{"Certificates": [{"CertID": "Certificate ID", "CertName": "Name of the Certificate", "OrganizationName": "Name of the Organization","DateOfIssue": "dd/mm/yyyy", "ExpireDate": "dd/mm/yyyy"}, {}, {},..]} or {"Certificates": "No Certificates found"}`  
+    - Success: `{200: [{"CertID": "Certificate ID", "CertName": "Name of the Certificate", "OrganizationName": "Name of the Organization","DateOfIssue": "dd/mm/yyyy", "ExpireDate": "dd/mm/yyyy"}, {}, {},..]}` or `{404: "No Certificates found"}`  
     - Error: `{"error": "Oops! Please try again later."}`  
 **Response Code:**  
     - Success: 200  
@@ -16,7 +16,7 @@
 **Query params:** ?CertID=xxx  
 **Payload:** Updated Cert data eg: `{"CertName": "Name of the Certificate", "OrganizationName": "Name of the Organization","DateOfIssue": "dd/mm/yyyy", "ExpireDate": "dd/mm/yyyy"}`  
 **Response Json:**  
-    - Success: `{"message": "Certificate updated successfully"}`  
+    - Success: `{200: "Certificate updated successfully"}`  
     - Error: `{"error": "Oops! Please try again later."}`  
 **Response Code:**  
     - Success: 200  
@@ -28,7 +28,7 @@
 **Query params:** ?CertID=xxx  
 **Payload:** -  
 **Response Json:**  
-    - Success: `{"message": "Certificate deleted successfully"}`  
+    - Success: `{200: "Certificate deleted successfully"}`  
     - Error: `{"error": "Oops! Please try again later."}`  
 **Response Code:**  
     - Success: 200  
@@ -40,7 +40,7 @@
 **Query params:** ?EmployeeID=xxxx  
 **Payload:** `{"CertID": "Certificate ID", "CertName": "Name of the Certificate", "OrganizationName": "Name of the Organization","DateOfIssue": "dd/mm/yyyy", "ExpireDate": "dd/mm/yyyy"}`  
 **Response Json:**  
-    - Success: `{"message": "{"field": "data", ..}"}`  
+    - Success: `{200: "Certificate inserted successfully"}`  
     - Error: `{"error": "Cause of the error"}`  
 **Response Code:**  
     - Success: 200  
@@ -52,9 +52,9 @@
 **Query params:** ?EmployeeID=xxxx&(CertID=xxx / CertName=xxx / OrganizationName=xxx)  
 **Payload:** -  
 **Response Json:**  
-    - Success: `{"Certificate": {"CertName": "Name of the Certificate", "OrganizationName": "Name of the Organization","DateOfIssue": "dd/mm/yyyy", "ExpireDate": "dd/mm/yyyy"}}`  
+    - Success: `{200: {"CertName": "Name of the Certificate", "OrganizationName": "Name of the Organization","DateOfIssue": "dd/mm/yyyy", "ExpireDate": "dd/mm/yyyy"}}`  
        Appropriate response will be generated based on the search option.  
-       (or) `{"message": "No such Certificate found"}`  
+       (or) `{404: "No such Certificate found"}`  
     - Error: `{"error": "Oops! Please try again later."}`  
 **Response Code:**  
     - Success: 200  
