@@ -1,10 +1,3 @@
-<!-- List of API's -->
-List certs
-Edit cert 
-Delete cert 
-Insert cert 
----------------------
-
 1. List Cert:
     Method : GET 
     Endpoint : /api/me/certs 
