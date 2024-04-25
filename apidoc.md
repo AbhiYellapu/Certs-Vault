@@ -1,4 +1,4 @@
-### 1. List Cert:
+### 1. List Certs:
 **Method:** GET  
 **Endpoint:** /api/me/certs  
 **Query params:** ?EmployeeID=xxxx&sort=(DateOfIssue/ExpireDate/Asc/Desc)  
