@@ -24,7 +24,6 @@ app.get('/api/me/certs', async function (request, response) {
         // const certs = await getCert(db, empID, searchOption);
         // response.send(certs);
     }
-    response.send(`{"EmployeeID": "${empID}", "${queryParamsKeys[1]}": "${request.query[queryParamsKeys[1]]}"}`);
 });
 
 app.get('/api/account', async function (request, response) {
@@ -46,7 +45,7 @@ api.delete('/api/me/updateCert', function (request, response) {
 });
 
 api.get('api/loginCredentials', function (request, response) {
-    response.json
+    response.send("");
 })
 
 app.listen(port, function() {
