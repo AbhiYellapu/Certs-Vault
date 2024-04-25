@@ -1,6 +1,6 @@
 // Get all Employeee Details
 
-import { connectToDatabase } from "./dbconnection.js";
+// import { connectToDatabase } from "./dbconnection.js";
 
 export async function getEmployeeDetails(db, employeeID) {
         let table = 'Employee';
