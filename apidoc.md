@@ -4,8 +4,8 @@
 **Query params:** ?EmployeeID=xxxx&sort=(DateOfIssue/ExpireDate/Asc/Desc)  
 **Payload:** -  
 **Response Json:**  
-    - Success: `{200: [{"CertID": "Certificate ID", "CertName": "Name of the Certificate", "OrganizationName": "Name of the Organization","DateOfIssue": "dd/mm/yyyy", "ExpireDate": "dd/mm/yyyy"}, {}, {},..]}` or `{404: "No Certificates found"}`  
-    - Error: `{"error": "Oops! Please try again later."}`  
+    - Success: `{"Response message": [{"CertID": "Certificate ID", "CertName": "Name of the Certificate", "OrganizationName": "Name of the Organization","DateOfIssue": "dd/mm/yyyy", "ExpireDate": "dd/mm/yyyy",..}, {}, {},..], "Response code": 200}` or `{"Response message": "No Certificates found", "Response code": 200/404}`  
+    - Error: `{"Response message": "Oops! Please try again later.", "Response code": 500}`
 **Response Code:**  
     - Success: 200  
     - Error: 500  
@@ -14,10 +14,10 @@
 **Method:** PUT or PATCH  
 **Endpoint:** /api/me/certs/updatecert  
 **Query params:** ?CertID=xxx  
-**Payload:** Updated Cert data eg: `{"CertName": "Name of the Certificate", "OrganizationName": "Name of the Organization","DateOfIssue": "dd/mm/yyyy", "ExpireDate": "dd/mm/yyyy"}`  
+**Payload:** Updated Cert data eg: `{"CertName": "Name of the Certificate", "OrganizationName": "Name of the Organization","DateOfIssue": "dd/mm/yyyy", "ExpireDate": "dd/mm/yyyy",..}`  
 **Response Json:**  
-    - Success: `{200: "Certificate updated successfully"}`  
-    - Error: `{"error": "Oops! Please try again later."}`  
+    - Success: `{"Response message": "Certificate updated successfully", "Response code": 200}`  
+    - Error: `{"Response message": "Oops! Please try again later.", "Response code": 500}`  
 **Response Code:**  
     - Success: 200  
     - Error: 500  
@@ -28,8 +28,8 @@
 **Query params:** ?CertID=xxx  
 **Payload:** -  
 **Response Json:**  
-    - Success: `{200: "Certificate deleted successfully"}`  
-    - Error: `{"error": "Oops! Please try again later."}`  
+    - Success: `{"Response message": "Certificate deleted successfully", "Response code": 200}`  
+    - Error: `{"Response message": "Oops! Please try again later.", "Response code": 500}`    
 **Response Code:**  
     - Success: 200  
     - Error: 500  
@@ -38,13 +38,13 @@
 **Method:** POST  
 **Endpoint:** /api/me/insertCert  
 **Query params:** ?EmployeeID=xxxx  
-**Payload:** `{"CertID": "Certificate ID", "CertName": "Name of the Certificate", "OrganizationName": "Name of the Organization","DateOfIssue": "dd/mm/yyyy", "ExpireDate": "dd/mm/yyyy"}`  
+**Payload:** `{"CertID": "Certificate ID", "CertName": "Name of the Certificate", "OrganizationName": "Name of the Organization","DateOfIssue": "dd/mm/yyyy", "ExpireDate": "dd/mm/yyyy",..}`  
 **Response Json:**  
-    - Success: `{200: "Certificate inserted successfully"}`  
-    - Error: `{"error": "Cause of the error"}`  
+    - Success: `{"Response message": "Certificate inserted successfully", "Response code": 200}`  
+    - Error: `{"Response message": "Cause of the error", "Response code": (500)}`  
 **Response Code:**  
     - Success: 200  
-    - Error status code eg: (500)
+    - Error status code eg: (500)  
 
 ### 5. Search Cert:
 **Method:** GET   
@@ -52,10 +52,10 @@
 **Query params:** ?EmployeeID=xxxx&(CertID=xxx / CertName=xxx / OrganizationName=xxx)  
 **Payload:** -  
 **Response Json:**  
-    - Success: `{200: {"CertName": "Name of the Certificate", "OrganizationName": "Name of the Organization","DateOfIssue": "dd/mm/yyyy", "ExpireDate": "dd/mm/yyyy"}}`  
+    - Success: `{"Response message": {"CertName": "Name of the Certificate", "OrganizationName": "Name of the Organization","DateOfIssue": "dd/mm/yyyy", "ExpireDate": "dd/mm/yyyy",..}, "Response code": 200}`  
        Appropriate response will be generated based on the search option.  
-       (or) `{404: "No such Certificate found"}`  
-    - Error: `{"error": "Oops! Please try again later."}`  
+       (or) `{"Response message": "No such Certificate found", "Response code": 200/404}`  
+    - Error: `{"Response message": "Oops! Please try again later.", "Response code": 500}`    
 **Response Code:**  
     - Success: 200  
     - Error: 500  
