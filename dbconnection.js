@@ -6,7 +6,7 @@ import { open } from 'sqlite';
 export async function connectToDatabase() {
     try {
         let db = await open({
-            filename: './test.db',
+            filename: './CertVault.db',
             driver: sqlite3.Database
         });
         return db;
