@@ -54,8 +54,8 @@ app.post('/api/:empID/certs', async function (request, response) {
         let certID = request.query.certID;
         let cert = request.body;
 
-        let editQuery = `UPDATE EmployeeCertificates SET CertID = ?, IssueDate = ?,  ExpireDate = ?, CredentialID = ?, CredentialURL = ? WHERE EmployeeID = ? AND CertID = ?;`;
-        let affectedRow = await db.run(editQuery, (await getCertID(cert.Certificate.CertName)), cert.Certificate.IssueDate, cert.Certificate.ExpireDate, cert.Certificate.CredentialID, cert.Certificate.CredentialURL, empID, certID);
+        let editQuery = `UPDATE EmployeeCertificates SET IssueDate = ?,  ExpireDate = ?, CredentialID = ?, CredentialURL = ? WHERE EmployeeID = ? AND CertID = ?;`;
+        let affectedRow = await db.run(editQuery, cert.Certificate.IssueDate, cert.Certificate.ExpireDate, cert.Certificate.CredentialID, cert.Certificate.CredentialURL, empID, certID);
         
         if (affectedRow.changes == 1) {
             let editedCertificate = await getCertificate(empID, certID);
