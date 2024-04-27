@@ -21,9 +21,9 @@ app.get('/api/:empID/certs', async function (request, response) {
         ORDER BY ${sortOption} ${sortBy};`
         
         const certs = await db.all(selectQuery, empID);
-        response.status(200).send({ Certificates: certs });
+        response.status(200).send({ Certificates: certs, Status: true });
     } catch (error) {
-        response.status(500).send(error);
+        response.status(500).send({ Error: error, Status: false });
     }
 });
 
@@ -31,7 +31,7 @@ app.post('/api/:empID/certs', async function (request, response) {
     let cert;
     let empID = request.params.empID;
     if (request.get('Content-Type') !== 'application/json') {
-        response.status(400).send("Invalid JSON");
+        response.status(400).send({ Error: "Invalid JSON", Status: false });
     } else {
         cert = request.body;
         try {
@@ -39,10 +39,13 @@ app.post('/api/:empID/certs', async function (request, response) {
             let affectedRow = await db.run(insertQuery, (await getCertID(cert.Certificate.CertName)), empID, cert.Certificate.IssueDate, cert.Certificate.ExpireDate, cert.Certificate.CredentialID, cert.Certificate.CredentialURL);
 
             let insertedCertificate = await getAffectedRow(affectedRow.lastID);
-            response.status(201).send({ InsertedCertificate: insertedCertificate, Status: "Certificate inserted successfully" });
+            response.status(201).send({ InsertedCertificate: insertedCertificate, ResponseMessage: "Certificate inserted successfully", Status: true });
 
         } catch (error) {
-            response.status(500).send(error);
+            if (error.code == "SQLITE_CONSTRAINT") {
+                response.status(400).send({ Error: 'Failed to insert the certificate', Status: false});
+            }
+            response.status(500).send({ Error: error, Status: false });
             console.log(error);
         }
     }
@@ -59,13 +62,13 @@ app.put('/api/:empID/certs', async function (request, response) {
         
         if (affectedRow.changes == 1) {
             let editedCertificate = await getCertificate(empID, certID);
-            response.status(200).send({ EditedCertificate: editedCertificate, Status: "Certificate edited successfully" });
+            response.status(200).send({ EditedCertificate: editedCertificate, ResponseMessage: "Certificate edited successfully", Status: true });
         } else {
-            response.status(400).send({ Status: 'Failed to edit the certificate' });
+            response.status(400).send({ Status: 'Failed to edit the certificate', Status: false });
         }
     } catch (error) {
         console.log(error);
-        response.status(500).send(error);
+        response.status(500).send({ Error: error, Status: false });
     }
 });
 
@@ -79,13 +82,13 @@ app.delete('/api/:empID/certs', async function (request, response) {
         const affectedRow = await db.run(deleteQuery, certID, empID);
 
         if (affectedRow.changes == 1) {
-            response.send({ DeletedCertificate: deletedCertificate, Status: "Certificate deleted successfully" });
+            response.send({ DeletedCertificate: deletedCertificate, Status: "Certificate deleted successfully", Status: true });
         } else {
-            response.status(400).send({ Status: 'Failed to delete the certificate' });
+            response.status(400).send({ ResponseMessage: 'Failed to delete the certificate', Status: false });
         }
     } catch (error) {
         console.log(error);
-        response.status(500).send(error);
+        response.status(500).send({ Error: error, Status: false });
     }
 });
 
