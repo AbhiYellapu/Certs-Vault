@@ -21,15 +21,16 @@
             }, 
             {}, ....
             {}
-        ], 
-      "Response code": 200
+        ],
+      "Status": true,
+      "Count": "No of certs"
     }
   ```
 - Error: 
   ```json
     {
-      "Response message": "Oops! Please try again later.", 
-      "Response code": 500
+      "ResponseMessage": "Oops! Please try again later.", 
+      "Status": false
     }
   ```
 **Response Code:**  
@@ -59,8 +60,8 @@
 - Success: 
   ```json 
        {
-            "Status": 
-            "Certificate edited successfully",
+            "ResponseMessage": "Certificate edited successfully",
+            "Status": true,
             "EditedCertficate": 
             {
                 "CertName": "Name of the Certificate", 
@@ -76,15 +77,14 @@
 - Error: 
   ```json 
         {
-            "Response message": 
-            "Oops! Please try again later.", 
-            "Error": 
-            "(Cause of the error)"
+            "ResponseMessage": "message",
+            "Status": false,
+            "Error": "(Cause of the error)"
         }
   ```  
 **Response Code:**  
 - Success: 200  
-- Error: 500  
+- Error: 500/400  
 
 ### 3. Delete Cert:
 **Method:** DELETE  
@@ -95,8 +95,8 @@
 - Success: 
     ```json
         {
-            "Status": 
-            "Certificate deleted successfully", 
+            "ResponseMessage": "Certificate deleted successfully",
+            "Status": true,
             "DeletedCertificate": 
             {
                 "CertName": "Name of the Certificate", 
@@ -111,15 +111,14 @@
 - Error: 
     ```json
         {
-            "Response message": 
-            "Oops! Please try again later.", 
-            "Error": 
-            "Cause of the error"
+            "Response message": "Message",
+            "Status": false
+            "Error": "Cause of the error"
         }
     ```    
 **Response Code:**  
 - Success: 200  
-- Error: 500  
+- Error: 500/400  
 
 ### 4. Insert Cert:
 **Method:** PUT  
@@ -145,8 +144,8 @@
 - Success: 
   ```json 
        {
-            "Status": 
-            "Certificate inserted successfully",
+            "ResponseMessage": "Certificate inserted successfully",
+            "Status": true,
             "InsertedCertficate": 
             {
                 "CertID": "Certificate ID", 
@@ -163,10 +162,9 @@
 - Error: 
   ```json 
         {
-            "Response message": 
-            "Oops! Please try again later.", 
-            "Error": 
-            "(Cause of the error)"
+            "Response message": "Message",
+            "Status": false,
+            "Error": "(Cause of the error)"
         }
   ```  
 **Response Code:**  
@@ -196,26 +194,23 @@
                 {}, ....
                 {}
             ], 
-          "Response code": 200
+          "Status": true
         }
 
        Appropriate response will be generated based on the search option.  
                                   (or) 
 
         {
-            "Response message": 
-            "No such Certificate found", 
-            "Status": 
-            404
+            "Response message": "No such Certificate found", 
+            "Status": false
         }
   ```  
 - Error: 
   ```json 
         {
-            "Response message": 
-            "Oops! Please try again later.", 
-            "Error": 
-            "(Cause of the error)"
+            "Response message": "Oops! Please try again later.", 
+            "Error": "(Cause of the error)",
+            "Status": false
         }
   ```  
 **Response Code:**  
