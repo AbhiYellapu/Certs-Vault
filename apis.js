@@ -21,7 +21,7 @@ app.get('/api/:empID/certs', async function (request, response) {
         ORDER BY ${sortOption} ${sortBy};`
         
         const certs = await db.all(selectQuery, empID);
-        response.status(200).send({ Certificates: certs, Status: true });
+        response.status(200).send({ Certificates: certs, Status: true, Count: certs.length });
     } catch (error) {
         response.status(500).send({ Error: error, Status: false });
     }
