@@ -48,7 +48,7 @@ app.post('/api/signin', async function (request, response) {
 
 });
 
-app.get('/accessToken', function (request, response) {
+app.get('/api/accessToken', function (request, response) {
     try {
         const token = request.headers.authorization.split(' ')[1];
         if (!token) {
