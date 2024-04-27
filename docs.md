@@ -38,7 +38,7 @@
 
 ### 2. Edit Cert:
 **Method:** POST  
-**Endpoint:** `/api/:empID/certs/editcert`  
+**Endpoint:** `/api/:empID/certs`  
 **Query params:** `?CertID=xxx`  
 **Payload:**  
 - Edited Cert data in the form of Json eg: 
@@ -126,7 +126,7 @@
 
 ### 4. Insert Cert:
 **Method:** PUT  
-**Endpoint:** `/api/:empID/insertCert`  
+**Endpoint:** `/api/:empID/certs`  
 **Query params:** -  
 **Payload:**  
 - Certificate data in the form of Json  
