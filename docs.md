@@ -46,7 +46,6 @@
         {
             "Certficate": 
             {
-                "CertID": "Certificate ID", 
                 "CertName": "Name of the Certificate", 
                 "OrganizationName": "Name of the Organization", 
                 "DateOfIssue": "dd/mm/yyyy", 
@@ -64,7 +63,6 @@
             "Certificate edited successfully",
             "EditedCertficate": 
             {
-                "CertID": "Certificate ID", 
                 "CertName": "Name of the Certificate", 
                 "OrganizationName": "Name of the Organization", 
                 "DateOfIssue": "dd/mm/yyyy", 
@@ -101,7 +99,6 @@
             "Certificate deleted successfully", 
             "DeletedCertificate": 
             {
-                "CertID": "Certificate ID", 
                 "CertName": "Name of the Certificate", 
                 "OrganizationName": "Name of the Organization", 
                 "DateOfIssue": "dd/mm/yyyy", 
