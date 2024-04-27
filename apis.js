@@ -27,7 +27,7 @@ app.get('/api/:empID/certs', async function (request, response) {
     }
 });
 
-app.put('/api/:empID/insertCert', async function (request, response) {
+app.put('/api/:empID/certs', async function (request, response) {
     let cert;
     let empID = request.params.empID;
     if (request.get('Content-Type') !== 'application/json') {
@@ -39,7 +39,7 @@ app.put('/api/:empID/insertCert', async function (request, response) {
             let affectedRow = await db.run(insertQuery, (await getCertID(cert.Certificate.CertName)), empID, cert.Certificate.IssueDate, cert.Certificate.ExpireDate, cert.Certificate.CredentialID, cert.Certificate.CredentialURL);
 
             let insertedCertificate = await getAffectedRow(affectedRow.lastID);
-            response.send({ InsertedCertificate: insertedCertificate, status: "Certificate inserted successfully" });
+            response.send({ InsertedCertificate: insertedCertificate, Status: "Certificate inserted successfully" });
 
         } catch (error) {
             response.status(500).send(error);
@@ -48,7 +48,7 @@ app.put('/api/:empID/insertCert', async function (request, response) {
     }
 });
 
-app.post('/api/:empID/certs/editCert', async function (request, response) {
+app.post('/api/:empID/certs', async function (request, response) {
     try {
         let empID = request.params.empID;
         let certID = request.query.certID;
@@ -59,9 +59,9 @@ app.post('/api/:empID/certs/editCert', async function (request, response) {
         
         if (affectedRow.changes == 1) {
             let editedCertificate = await getCertificate(empID, certID);
-            response.send({ EditedCertificate: editedCertificate, status: "Certificate edited successfully" });
+            response.send({ EditedCertificate: editedCertificate, Status: "Certificate edited successfully" });
         } else {
-            response.status(500).send({ status: 'Failed to edit the certificate' });
+            response.status(500).send({ Status: 'Failed to edit the certificate' });
         }
     } catch (error) {
         console.log(error);
@@ -79,9 +79,9 @@ app.delete('/api/:empID/certs', async function (request, response) {
         const affectedRow = await db.run(deleteQuery, certID, empID);
 
         if (affectedRow.changes == 1) {
-            response.send({ DeletedCertificate: deletedCertificate, status: "Certificate deleted successfully" });
+            response.send({ DeletedCertificate: deletedCertificate, Status: "Certificate deleted successfully" });
         } else {
-            response.status(500).send({ status: 'Failed to delete the certificate' });
+            response.status(500).send({ Status: 'Failed to delete the certificate' });
         }
     } catch (error) {
         console.log(error);
@@ -89,7 +89,7 @@ app.delete('/api/:empID/certs', async function (request, response) {
     }
 });
 
-app.get('/api/:user/searchCert', async function (request, response) {
+app.get('/api/:empID/certs/searchCert', async function (request, response) {
     let empID = request.params.empID;
     const queryParamsKeys = Object.keys(request.query);
     let optionKey = queryParamsKeys[0];
