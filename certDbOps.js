@@ -112,4 +112,16 @@ async function getCertificate(empID, certID) {
     }
 }
 
-export { addCert, editCert, getAllCerts, deleteCert };
+async function getUserDetails(username) {
+    let existingUser;
+    try {
+        existingUser = await db.get("SELECT * FROM User WHERE Username = ?", username);
+        console.log(existingUser);
+    } catch (error) {
+        console.log(error);
+    }
+    return existingUser;
+}
+
+export { addCert, editCert, getAllCerts, deleteCert, getUserDetails };
+
