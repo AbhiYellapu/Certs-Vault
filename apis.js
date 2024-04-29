@@ -116,7 +116,7 @@ app.get('/api/accessToken', function (request, response) {
         // console.log(decodedToken);
         response.status(200).send({ Success: true, Data: { EmployeeID: decodedToken.EmployeeID } });
     } catch (error) {
-        response.send(error);
+        response.status(410).send({ Status: false, ResponseMessage: error });
     }
 });
 
