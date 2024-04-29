@@ -110,7 +110,7 @@ app.get('/api/accessToken', function (request, response) {
         const token = request.headers.authorization.split(' ')[1];
         console.log(request.headers.authorization);
         if (!token) {
-            response.status(200).send({ Success: false, ResponseMessage: "Error!Token was not provided." });
+            response.status(400).send({ Success: false, ResponseMessage: "Invalid token!." });
         }
         const decodedToken = jwt.verify(token, "empID");
         // console.log(decodedToken);
