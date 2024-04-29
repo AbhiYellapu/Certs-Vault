@@ -20,7 +20,7 @@ app.post('/api/login', async function (request, response) {
         response.status(401).send({ ResponseMessage: "Invalid username and password" });
     } else {
         try {
-            token = jwt.sign({ EmployeeID: existingUser.EmployeeID }, "empID", { expiresIn: "1m" });
+            token = jwt.sign({ EmployeeID: existingUser.EmployeeID }, "empID", { expiresIn: "1d" });
             response.status(200).send({ Status: true, Data: { EmployeeID: existingUser.EmployeeID, Username: existingUser.Username, token: token } })
         } catch (error) {
             response.send({ error: "Oops, something went wrong!" });
