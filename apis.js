@@ -93,7 +93,7 @@ app.post('/api/login', async function (request, response) {
     } else {
         try {
             token = jwt.sign({ EmployeeID: existingUser.EmployeeID }, "empID", { expiresIn: "1d" });
-            response.status(200).send({ Status: true, Data: { EmployeeID: existingUser.EmployeeID, Username: existingUser.Username, token: token } })
+            response.status(200).send({ Status: true, Data: { Token: token } });
         } catch (error) {
             response.status(500).send({ error: `Oops, something went wrong!` });
             console.log(error);
