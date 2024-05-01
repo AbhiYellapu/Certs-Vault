@@ -134,7 +134,7 @@ function auth(request, response, next) {
     try {
         const token = request.headers.authorization.split(' ')[1];
         if (!token) {
-            return response.status(200).send({ Status: false, ResponseMessage: "Error!Token was not provided." });
+            return response.status(200).send({ Status: false, ResponseMessage: "Error!Token was invalid." });
         }
         const decodedToken = jwt.verify(token, "empID");
         // request.empID = decodedToken.EmployeeID;
