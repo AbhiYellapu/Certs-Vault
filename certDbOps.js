@@ -1,5 +1,6 @@
 // Cert Vault database operations
 
+import { response } from "express";
 import { connectToDatabase } from "./dbconnection.js";
 
 const db = await connectToDatabase();
@@ -75,7 +76,7 @@ async function deleteCert(empID, certID) {
         }
     } catch (error) {
         console.log(error);
-        response.status(500).send({ ResponseCode: 500, Data: { Error: error, Status: false } });
+        response = ({ ResponseCode: 500, Data: { Error: error, Status: false } });
     }
     return response;
 }
@@ -123,5 +124,48 @@ async function getUserDetails(username) {
     return existingUser;
 }
 
-export { addCert, editCert, getAllCerts, deleteCert, getUserDetails };
+async function getEmployeeDetails(employeeID) {
+    let query = `SELECT * FROM Employee WHERE EmployeeID = ?`;
+    return await db.get(query, employeeID);
+}
 
+async function getCertificatesDetails() {
+    let response;
+    try {
+        let query = `SELECT * FROM CERTIFICATE`;
+        let certificatesInfo = await db.all(query);
+        response = ({ ResponseCode: 200, Data: { CertificatesInfo: certificatesInfo, Status: true } });
+    } catch (error) {
+        response = ({ ResponseCode: 500, Data: { Error: error, Status: false } });
+    }
+    return response;
+}
+
+async function register(emp) {
+    let response;
+    try {
+        let empIDResult = await (db.get(`select (rowid + 1) as empID from Employee order by rowid desc limit 1`));
+        let empID = empIDResult.empID;
+        empID = `E000${empID}`;
+        let query = `INSERT INTO Employee (EmployeeID, EmployeeName, DOB, Email, MobileNumber) VALUES (?, ?, ?, ?, ?)`;
+        console.log(query, empID, emp.EmployeeName, emp.DOB, emp.Email, emp.MobileNumber);
+        let affectedRow = await db.run(query, empID, emp.EmployeeName, emp.DOB, emp.Email, emp.MobileNumber);
+        if (affectedRow.changes == 1) {
+            console.log(`INSERT INTO User (EmployeeID, Username, PasswordHash) VALUES (?, ?, ?)`, empID, emp.Username, emp.Password);
+            affectedRow = await db.run(`INSERT INTO User (EmployeeID, Username, PasswordHash) VALUES (?, ?, ?)`, empID, emp.Username, emp.Password);
+            if (affectedRow.changes == 1) {
+                response = { ResponseCode: 200, Data: { Status: true } };
+            } else {
+                response = { ResponseCode: 400, Data: { Status: false, ResponseMessage: `Failed to register your account ${affectedRow}` } };
+            }
+        } else {
+            response = { ResponseCode: 400, Data: { Status: false, ResponseMessage: `Failed to register your account ${affectedRow}` } };
+        }
+        console.log(affectedRow);
+    } catch (error) {
+        response = ({ ResponseCode: 500, Data: { Error: error.message, Status: false } });
+        console.log(error);
+    }
+    return response;
+}
+export { addCert, editCert, getAllCerts, deleteCert, getUserDetails, getEmployeeDetails, getCertificatesDetails, register };
