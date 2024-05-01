@@ -1,16 +1,17 @@
 // Certification api's
 
-import express from 'express'
+import express from 'express';
+import cors from 'cors';
 import * as certDbOps from './certDbOps.js'
 import jwt from 'jsonwebtoken';
 
 const port = 3000;
 const app = express();
 app.use(express.json());
+app.use(cors());
 
-app.get('/api/:empID/certs', async function (request, response) {
+app.get('/api/:empID/certs', auth, async function (request, response) {
     try {
-
         let empID = request.params.empID;
         let sortOption = request.query.sortOption || "CertName";
         let sortBy = request.query.sortBy || "ASC";
@@ -24,7 +25,7 @@ app.get('/api/:empID/certs', async function (request, response) {
     }
 });
 
-app.post('/api/:empID/certs', async function (request, response) {
+app.post('/api/:empID/certs', auth, async function (request, response) {
     let cert;
     let empID = request.params.empID;
 
@@ -44,7 +45,7 @@ app.post('/api/:empID/certs', async function (request, response) {
     }
 });
 
-app.put('/api/:empID/certs', async function (request, response) {
+app.put('/api/:empID/certs', auth, async function (request, response) {
     try {
         let empID = request.params.empID;
         let certID = request.query.certID;
@@ -59,7 +60,7 @@ app.put('/api/:empID/certs', async function (request, response) {
     }
 });
 
-app.delete('/api/:empID/certs', async function (request, response) {
+app.delete('/api/:empID/certs', auth, async function (request, response) {
     try {
         let empID = request.params.empID;
         let certID = request.query.certID;
@@ -73,7 +74,7 @@ app.delete('/api/:empID/certs', async function (request, response) {
     }
 });
 
-app.get('/api/:empID/certs/searchCert', async function (request, response) {
+app.get('/api/:empID/certs/searchCert', auth, async function (request, response) {
     let empID = request.params.empID;
     const queryParamsKeys = Object.keys(request.query);
     let optionKey = queryParamsKeys[0];
@@ -83,43 +84,69 @@ app.get('/api/:empID/certs/searchCert', async function (request, response) {
     response.send(certs);
 });
 
+app.get('/api/:empID/accountVerfication', auth, async function (request, response) {
+    let empID = request.params.empID;
+    console.log(empID);
+    response.status(200).json({ Status: true });
+});
+
+app.get('/api/:empID/accountDetails', auth, async function (request, response) {
+    let empID = request.params.empID;
+    console.log(empID);
+    let employeeDetails = await certDbOps.getEmployeeDetails(empID);
+    response.send({ Status: true, Data: employeeDetails });
+    console.log()
+});
+
 app.post('/api/login', async function (request, response) {
     let username = request.body.Username;
     let password = request.body.Password;
+    let hashPassword = getHashingPassword(password);
+
     let token;
     let existingUser = await certDbOps.getUserDetails(username);
-    if (!existingUser || existingUser.Password != password) {
+    if (!existingUser || existingUser.PasswordHash != hashPassword) {
         response.status(401).send({ ResponseMessage: "Invalid username or password" });
     } else {
         try {
             token = jwt.sign({ EmployeeID: existingUser.EmployeeID }, "empID", { expiresIn: "1d" });
-            response.status(200).send({ Status: true, Data: { Token: token } });
+            response.status(200).send({ Status: true, Data: { Token: token } })
         } catch (error) {
-            response.status(500).send({ error: `Oops, something went wrong!` });
+            response.send({ error: `Oops, something went wrong!` });
             console.log(error);
         }
     }
 });
 
 app.post('/api/signup', async function (request, response) {
-
-});
-
-app.get('/api/accessToken', function (request, response) {
-    try {
-        const token = request.headers.authorization.split(' ')[1];
-        console.log(request.headers.authorization);
-        if (!token) {
-            response.status(400).send({ Success: false, ResponseMessage: "Invalid token!." });
-        }
-        const decodedToken = jwt.verify(token, "empID");
-        // console.log(decodedToken);
-        response.status(200).send({ Success: true, Data: { EmployeeID: decodedToken.EmployeeID } });
-    } catch (error) {
-        response.status(410).send({ Status: false, ResponseMessage: error });
-    }
+    let emp = request.body;
+    emp.Password = getHashingPassword(emp.Password);
+    console.log(emp);
+    let responseData = await certDbOps.register(emp);
+    response.status(responseData.ResponseCode).send(responseData.Data);
 });
 
 app.listen(port, function () {
     console.log(`Server is running on port: ${port}.`);
 });
+
+function auth(request, response, next) {
+    try {
+        const token = request.headers.authorization.split(' ')[1];
+        if (!token) {
+            return response.status(200).send({ Status: false, ResponseMessage: "Error!Token was not provided." });
+        }
+        const decodedToken = jwt.verify(token, "empID");
+        // request.empID = decodedToken.EmployeeID;
+        request.params.empID = decodedToken.EmployeeID;
+        next();
+    } catch (error) {
+        if (error instanceof jwt.JsonWebTokenError) {
+            return response.status(401).json({ Status: false, ResponseMessage: `${error.message}` });
+        }
+        next(error);
+    }
+}
+
+function getHashingPassword(password) {
+    
