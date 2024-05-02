@@ -93,7 +93,7 @@ app.delete('/api/:empID/certs', auth, async function (request, response) {
         if (affectedRow.changes == 1) {
             response.status(200).send({ DeletedCertificate: deletedCertificate, ResponseMessage: "Certificate deleted successfully", Status: true });
         } else if (affectedRow.changes == 0) {
-            response.status(400).send({ ResponseMessage: `Failed to delete the certificate because, Certificate not found!`, Status: false });
+            response.status(404).send({ ResponseMessage: `Failed to delete the certificate because, Certificate not found!`, Status: false });
         } else {
             response.status(500).send({ Error: responseData, Status: false });
         }
