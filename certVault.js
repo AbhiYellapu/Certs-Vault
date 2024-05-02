@@ -399,7 +399,7 @@ async function deleteCert(button) {
                     document.getElementById('certForm').innerHTML = "";
                     await showAllCerts(token);
                 }
-            } else if (response.status == 400) {
+            } else if (response.status == 404) {
                 alert(data.ResponseMessage);
             } else if (response.status == 500) {
                 alert(data.Error);
