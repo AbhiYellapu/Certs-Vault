@@ -14,10 +14,9 @@ async function getAllCerts(empID, sortOption, sortBy) {
         ORDER BY ${sortOption} ${sortBy};`
 
         const certs = await db.all(selectQuery, empID);
-        response = ({ ResponseCode: 200, Data: { Certificates: certs, Status: true, Count: certs.length } });
+        response = certs;
     } catch (error) {
-        console.log(error);
-        response = ({ ResponseCode: 500, Data: { Error: error, Status: false } });
+        response = error;
     }
     return response;
 }
@@ -26,18 +25,12 @@ async function addCert(empID, cert) {
     let response;
     try {
         let insertQuery = `INSERT INTO EmployeeCertificates (CertID, EmployeeID, IssueDate, ExpireDate, CredentialID, CredentialURL) VALUES (?, ?, ?, ?, ?, ?);`
-        let affectedRow = await db.run(insertQuery, (await getCertID(cert.Certificate.CertName)), empID, cert.Certificate.IssueDate, cert.Certificate.ExpireDate, cert.Certificate.CredentialID, cert.Certificate.CredentialURL);
+        let affectedRow = await db.run(insertQuery, (await getCertID(cert.Certificate.CertName, cert.Certificate.OrganizationName)), empID, cert.Certificate.IssueDate, cert.Certificate.ExpireDate, cert.Certificate.CredentialID, cert.Certificate.CredentialURL);
 
         let insertedCertificate = await getAffectedRow(affectedRow.lastID);
-        response = ({ ResponseCode: 201, Data: { InsertedCertificate: insertedCertificate, ResponseMessage: "Certificate inserted successfully", Status: true } });
-
+        response = insertedCertificate;
     } catch (error) {
-        if (error.code == "SQLITE_CONSTRAINT") {
-            response = ({ ResponseCode: 400, Data: { Error: `Failed to insert the certificate, Credential ID[${cert.Certificate.CredentialID}] already existed`, Status: false } });
-        } else {
-            response = ({ ResponseCode: 500, Data: { Error: error, Status: false } });
-        }
-        console.log(error);
+        response = error;
     }
     return response;
 }
@@ -48,15 +41,9 @@ async function editCert(empID, certID, cert) {
         let editQuery = `UPDATE EmployeeCertificates SET IssueDate = ?,  ExpireDate = ?, CredentialID = ?, CredentialURL = ? WHERE EmployeeID = ? AND CertID = ?;`;
         let affectedRow = await db.run(editQuery, cert.Certificate.IssueDate, cert.Certificate.ExpireDate, cert.Certificate.CredentialID, cert.Certificate.CredentialURL, empID, certID);
 
-        if (affectedRow.changes == 1) {
-            let editedCertificate = await getCertificate(empID, certID);
-            response = ({ ResponseCode: 200, Data: { EditedCertificate: editedCertificate, ResponseMessage: "Certificate edited successfully", Status: true } });
-        } else {
-            response = ({ ResponseCode: 400, Data: { ResponseMessage: 'Failed to edit the certificate', Status: false } });
-        }
+        response = affectedRow;
     } catch (error) {
-        console.log(error);
-        response = ({ ResponseCode: 500, Data: { Error: error, Status: false } });
+        response = error;
     }
     return response;
 }
@@ -65,24 +52,17 @@ async function deleteCert(empID, certID) {
     let response;
     try {
         let deleteQuery = `DELETE FROM EmployeeCertificates WHERE CertID = ? AND EmployeeID = ?;`;
-
-        let deletedCertificate = await getCertificate(empID, certID);
         let affectedRow = await db.run(deleteQuery, certID, empID);
 
-        if (affectedRow.changes == 1) {
-            response = ({ ResponseCode: 200, Data: { DeletedCertificate: deletedCertificate, ResponseMessage: "Certificate deleted successfully", Status: true } });
-        } else {
-            response = ({ ResponseCode: 400, Data: { ResponseMessage: 'Failed to delete the certificate because, Certificate not found', Status: false } });
-        }
+        response = affectedRow;
     } catch (error) {
-        console.log(error);
-        response = ({ ResponseCode: 500, Data: { Error: error, Status: false } });
+        response = error;
     }
     return response;
 }
 
-async function getCertID(certName) {
-    let certIDQuery = `SELECT CertID FROM Certificate WHERE CertName = '${certName}'`;
+async function getCertID(certName, orgName) {
+    let certIDQuery = `SELECT CertID FROM Certificate WHERE CertName = '${certName}' AND OrganizationName = '${orgName}'`;
     try {
         return (await db.get(certIDQuery)).CertID;
     } catch (error) {
@@ -117,7 +97,6 @@ async function getUserDetails(username) {
     let existingUser;
     try {
         existingUser = await db.get("SELECT * FROM User WHERE Username = ?", username);
-        console.log(existingUser);
     } catch (error) {
         console.log(error);
     }
@@ -134,9 +113,9 @@ async function getCertificatesDetails() {
     try {
         let query = `SELECT * FROM CERTIFICATE`;
         let certificatesInfo = await db.all(query);
-        response = ({ ResponseCode: 200, Data: { CertificatesInfo: certificatesInfo, Status: true } });
+        response = certificatesInfo;
     } catch (error) {
-        response = ({ ResponseCode: 500, Data: { Error: error, Status: false } });
+        response = error;
     }
     return response;
 }
@@ -148,24 +127,12 @@ async function register(emp) {
         let empID = empIDResult.empID;
         empID = `E000${empID}`;
         let query = `INSERT INTO Employee (EmployeeID, EmployeeName, DOB, Email, MobileNumber) VALUES (?, ?, ?, ?, ?)`;
-        console.log(query, empID, emp.EmployeeName, emp.DOB, emp.Email, emp.MobileNumber);
         let affectedRow = await db.run(query, empID, emp.EmployeeName, emp.DOB, emp.Email, emp.MobileNumber);
-        if (affectedRow.changes == 1) {
-            console.log(`INSERT INTO User (EmployeeID, Username, PasswordHash) VALUES (?, ?, ?)`, empID, emp.Username, emp.Password);
-            affectedRow = await db.run(`INSERT INTO User (EmployeeID, Username, PasswordHash) VALUES (?, ?, ?)`, empID, emp.Username, emp.Password);
-            if (affectedRow.changes == 1) {
-                response = { ResponseCode: 200, Data: { Status: true } };
-            } else {
-                response = { ResponseCode: 400, Data: { Status: false, ResponseMessage: `Failed to register your account ${affectedRow}` } };
-            }
-        } else {
-            response = { ResponseCode: 400, Data: { Status: false, ResponseMessage: `Failed to register your account ${affectedRow}` } };
-        }
-        console.log(affectedRow);
+        affectedRow = await db.run(`INSERT INTO User (EmployeeID, Username, PasswordHash) VALUES (?, ?, ?)`, empID, emp.Username, emp.Password);
+        response = affectedRow;
     } catch (error) {
-        response = ({ ResponseCode: 500, Data: { Error: error.message, Status: false } });
-        console.log(error);
+        response = error;
     }
     return response;
 }
-export { addCert, editCert, getAllCerts, deleteCert, getUserDetails, getEmployeeDetails, getCertificatesDetails, register };
+export { addCert, editCert, getAllCerts, deleteCert, getUserDetails, getEmployeeDetails, getCertificatesDetails, register, getCertID, getCertificate };
