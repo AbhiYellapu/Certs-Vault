@@ -7,7 +7,7 @@ window.onload = async function () {
     token = localStorage.getItem(employeeCertTokenKey);
     let isValidToken = await userAuthentication(token)
     if (token && isValidToken) {
-        console.log("Session not expired!");
+        console.log("Session was not expired!");
     } else {
         createLoginSignupButtons();
         token = null;
